@@ -1,0 +1,2 @@
+1. changes let connnt un 
+2. checge WhatsApp if name and email is given then only it send massed

@@ -554,16 +554,30 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
       </section>
 
       <div class="floating-buttons">
-    <a href="https://wa.me/918888534360?text=Hello%20RichCore"
+    <a href="https://wa.me/919404887179?text=Hello%20RichCore"
        class="whatsapp-float"
        target="_blank"
        aria-label="WhatsApp">
         <i class="fab fa-whatsapp"></i>
     </a>
 
-    <a href="#top" class="scrollToTopBtn2" aria-label="Scroll to Top">
+    <a  id="openAgentBtn" class="scrollToTopBtn2" aria-label="Scroll to Top">
         RiChi 
     </a>
+
+    <div id="agentModal" class="agent-modal">
+    <div class="agent-container">
+
+        <button class="close-agent" onclick="closeAgent()">✖</button>
+
+        <iframe
+            src="./richi.html"
+            class="agent-frame"
+            frameborder="0">
+        </iframe>
+
+    </div>
+</div>
 
 
     <a href="#top" class="scrollToTopBtn" aria-label="Scroll to Top">
@@ -581,7 +595,7 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
 
     <section id="Connect" class="section fade-in">
 
-      <h2 class="animate-charcter">Connect Us</h2>
+      <h2 class="animate-charcter">Let’s Contact</h2>
       <!-- <p class="premium-text">RichCore was founded with a mission to empower brands through code that performs and designs that last. Built by visionaries. Trusted by game changers.</p> -->
 
 
@@ -593,13 +607,6 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
 
         <div class="cf4-form-section">
           <h2>Send us a message</h2>
-
-
-
- 
-
-
-
 
           <form id="contactForm" class="cf4-form">
             <input id="name" type="text" name="name" class="cf4-input"
@@ -637,30 +644,52 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
           </form>
         </div>
         <div class="cf4-info-section">
-          <h2 class="cf4-heading"><span class="cf4-underline">Let’s Contact</span></h2>
+          
           <!-- <p class="cf4-desc">We're open for any suggestion or just to have a chat</p>  Have Project in Mind? -->
 
           <p class="cf4-desc">Have Project in Mind? <br><b
               style="color: black; font-weight: bold; font-family:poppins;">" Let’s Turn your Ideas into Reality "</b>
             <br> We're open for discussion and happy to have a chat.</p>
 
+
+            <h2 class="cf4-heading"><span class="cf4-underline">Let’s Contact</span>
+            </h2>
+            <br>
+             <!-- <div class="mockup" style="text-align: center; margin-left: 10;">
+        <img src="./assets/Logo (3).png" />
+      </div> -->
+
           <ul class="cf4-contact-list">
-            <li>
-              <span class="cf4-icon">📍</span>
-              <span>Address: Pune, Maharashtra, India </span>
-            </li>
+
+
+           
+            
+            
+
+            
             <li>
               <span class="cf4-icon">📞</span>
-              <span>Phone: +91 8888534360</span>
+              <span>Phone: </span>+91 9404887179
             </li>
             <li>
               <span class="cf4-icon">📧</span>
-              <span>Email: <a
-                  href="mailto:ashishgaike21@gamil.com">ashishgaike21@gamil.com</a></span>
+              <span>Email:<a
+                  href="mailto:richcore.in@gmail.com">richcore.in@gmail.com</a></span>
             </li>
             <li>
+              <span class="cf4-icon" style="font-size: 20px; padding-left: 8px; padding-right: 0px;"><i class="fab fa-whatsapp"></i></span>
+              <span style="padding-left: 1px; font-size: 15px; padding-left: 4px;">WhatsApp: </span><a href="https://wa.me/919404887179?text=Hello%20RichCore" target="_blank" aria-label="WhatsApp"></i> 9404887179</a>
+
+            </li>
+
+            
+            <!-- <li>
               <span class="cf4-icon">🌐</span>
               <span>Website: <a href="#">richcore.com</a></span>
+            </li> -->
+            <li>
+              <span class="cf4-icon">📍</span>
+              <span>Address: Pune, Maharashtra, India </span>
             </li>
           </ul>
         </div>
@@ -668,7 +697,7 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
 
     </section>
     <footer>
-      &copy; 2025 RichCore. All rights reserved.
+      &copy; 2026 RichCore. All rights reserved.
     </footer>
 
     <script>
@@ -680,7 +709,7 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
     const cphone = document.getElementById("cphone").value;
     
 
-    const phone = "918888534360"; // Your number
+    const phone = "919404887179"; // Your number
 
     const text =
 `*New Website Inquiry:*
@@ -696,6 +725,16 @@ Message: ${message}`;
     window.open(url, "_blank");
 }
 </script>
+
+
+
+<script>const modal = document.getElementById("agentModal");document.getElementById("openAgentBtn").addEventListener("click", () => {    modal.style.display = "flex";});function closeAgent(){    modal.style.display = "none";}window.addEventListener("click", (e) => {    if(e.target === modal){        closeAgent();    }});</script>
+
+<!-- Floating AI Button Version
+If you want it like ChatGPT/WhatsApp:
+<button id="openAgentBtn" class="ai-float">    🤖</button>
+.ai-float{    position:fixed;    bottom:20px;    right:20px;    width:65px;    height:65px;    border:none;    border-radius:50%;    font-size:28px;    cursor:pointer;    z-index:9999;    background:linear-gradient(135deg,#FFD700,#F4C430);    color:#000;    box-shadow:0 10px 30px rgba(255,215,0,.4);}
+This keeps your AI agent completely separate from your main website, so all its CSS and JavaScript stay isolated and won't break your RichCore site. -->
 
     <script>
       // Scroll animation
