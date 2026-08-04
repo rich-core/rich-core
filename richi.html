@@ -3,143 +3,119 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Richi — RichCore AI Agent</title>
+  <title>Richi — RichCore AI Assistant</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css"/>
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html, body { height: 100%; font-family: 'Segoe UI', system-ui, sans-serif; background: #0e0e1c; }
 
-    /* ── Full Page Layout ── */
-    #app {
-      display: flex;
-      height: 100vh;
-      width: 100vw;
-      overflow: hidden;
+
+.ch-status {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.sdot {
+    width: 10px;
+    height: 10px;
+    background: #22c55e;
+    border-radius: 50%;
+    display: inline-block;
+    box-shadow: 0 0 8px #22c55e;
+    animation: blink 1.2s infinite ease-in-out;
+}
+
+@keyframes blink {
+    0%, 100% {
+        opacity: 1;
+        transform: scale(1);
+        box-shadow: 0 0 8px #22c55e;
     }
+    50% {
+        opacity: 0.4;
+        transform: scale(0.8);
+        box-shadow: 0 0 16px #22c55e;
+    }
+}
 
-    /* ── Left Sidebar ── */
+
+
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: #0e0e1c; color: #fff; }
+
+    #app { display: flex; height: 100vh; width: 100vw; overflow: hidden; }
+
+    /* ── Sidebar ── */
     #sidebar {
-      width: 260px;
-      background: #13132a;
-      border-right: 1px solid #2a2a4e;
-      display: flex;
-      flex-direction: column;
-      flex-shrink: 0;
-      padding: 20px 0;
+      width: 260px; background: #13132a; border-right: 1px solid #2a2a4e;
+      display: flex; flex-direction: column; flex-shrink: 0; padding: 20px 0;
     }
     #sidebar-logo {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 0 20px 20px;
+      display: flex; align-items: center; gap: 10px; padding: 0 20px 20px;
       border-bottom: 1px solid #2a2a4e;
     }
     #sidebar-logo svg { width: 42px; height: 42px; flex-shrink: 0; }
-    .logo-text { }
     .logo-name { font-size: 17px; font-weight: 800; color: #FFD700; letter-spacing: 0.3px; }
     .logo-sub { font-size: 10.5px; color: #888; margin-top: 1px; }
 
-    #sidebar-info {
-      padding: 18px 20px;
-      flex: 1;
-    }
+    #sidebar-info { padding: 18px 20px; flex: 1; overflow-y: auto; }
     .sidebar-label {
       font-size: 10px; font-weight: 700; letter-spacing: 1.2px;
       color: #555; text-transform: uppercase; margin-bottom: 10px;
     }
     .sidebar-chip {
-      display: block; width: 100%; text-align: left;
-      background: none; border: 1px solid #2a2a4e;
-      color: #ccc; font-size: 12.5px; padding: 8px 12px;
-      border-radius: 8px; cursor: pointer; margin-bottom: 6px;
-      transition: all 0.15s; font-family: inherit;
+      display: flex; align-items: center; width: 100%; text-align: left;
+      background: none; border: 1px solid #2a2a4e; color: #ccc;
+      font-size: 12.5px; padding: 8px 12px; border-radius: 8px; cursor: pointer;
+      margin-bottom: 6px; transition: all 0.15s; font-family: inherit;
     }
     .sidebar-chip:hover { background: #1f1f40; border-color: #FFD700; color: #FFD700; }
-    .sidebar-chip i { margin-right: 7px; font-size: 13px; color: #FFD700; }
+    .sidebar-chip i { margin-right: 8px; font-size: 14px; color: #FFD700; }
 
-    #sidebar-contact {
-      padding: 16px 20px;
-      border-top: 1px solid #2a2a4e;
-    }
+    #sidebar-contact { padding: 16px 20px; border-top: 1px solid #2a2a4e; }
     .contact-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
     .contact-row i { color: #FFD700; font-size: 14px; flex-shrink: 0; }
-    .contact-row a, .contact-row span {
-      font-size: 11.5px; color: #aaa; text-decoration: none; transition: color 0.15s;
-    }
+    .contact-row a, .contact-row span { font-size: 11.5px; color: #aaa; text-decoration: none; transition: color 0.15s; }
     .contact-row a:hover { color: #FFD700; }
+
     .status-row {
-      display: flex; align-items: center; gap: 6px;
-      padding: 10px 20px; margin-top: auto;
-      background: #0e0e1c; border-top: 1px solid #2a2a4e;
+      display: flex; align-items: center; gap: 6px; padding: 10px 20px;
+      margin-top: auto; background: #0e0e1c; border-top: 1px solid #2a2a4e;
     }
-    .sdot { width: 7px; height: 7px; border-radius: 50%; background: #4caf50; flex-shrink: 0; }
-    .status-txt { font-size: 11px; color: #666; }
+    .status-txt { font-size: 11px; color: #888; }
 
-    /* ── Main Chat Area ── */
-    #main {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      background: #f5f6fc;
-      min-width: 0;
-    }
+    /* ── Main Chat ── */
+    #main { flex: 1; display: flex; flex-direction: column; background: #f5f6fc; min-width: 0; color: #222; }
 
-    /* ── Chat Header ── */
     #chat-header {
-      background: #1a1a2e;
-      padding: 14px 24px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      flex-shrink: 0;
-      border-bottom: 2px solid #FFD700;
+      background: #1a1a2e; padding: 14px 24px; display: flex;
+      align-items: center; gap: 12px; flex-shrink: 0; border-bottom: 2px solid #FFD700;
     }
     #chat-header svg { width: 44px; height: 44px; flex-shrink: 0; }
     .ch-info { flex: 1; }
     .ch-name { font-size: 16px; font-weight: 800; color: #FFD700; }
     .ch-status { font-size: 11.5px; color: #aaa; margin-top: 2px; display: flex; align-items: center; gap: 5px; }
 
-
-    /* ── Chat Messages ── */
-    #chat-wrap {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      min-height: 0;
-    }
-    #richi-msgs {
-      flex: 1;
-      overflow-y: auto;
-      padding: 24px 24px 16px;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
+    #chat-wrap { flex: 1; display: flex; flex-direction: column; min-height: 0; }
+    #richi-msgs { flex: 1; overflow-y: auto; padding: 24px; display: flex; flex-direction: column; gap: 12px; }
     #richi-msgs::-webkit-scrollbar { width: 5px; }
-    #richi-msgs::-webkit-scrollbar-thumb { background: #ddd; border-radius: 5px; }
+    #richi-msgs::-webkit-scrollbar-thumb { background: #ccc; border-radius: 5px; }
 
     .mrow { display: flex; gap: 10px; align-items: flex-end; }
     .mrow.user { flex-direction: row-reverse; }
     .mav { width: 36px; height: 36px; border-radius: 50%; flex-shrink: 0; overflow: hidden; display: flex; align-items: center; justify-content: center; }
     .mav.user { background: #1a1a2e; color: #FFD700; font-size: 11px; font-weight: 700; }
-    .bub { max-width: 65%; padding: 10px 15px; border-radius: 18px; font-size: 14px; line-height: 1.6; }
-    .bub.bot { background: #fff; color: #222; border: 1px solid #eaeaea; border-bottom-left-radius: 4px; box-shadow: 0 1px 6px rgba(0,0,0,0.06); }
+    .bub { max-width: 70%; padding: 10px 15px; border-radius: 18px; font-size: 14px; line-height: 1.6; word-break: break-word; }
+    .bub.bot { background: #fff; color: #222; border: 1px solid #eaeaea; border-bottom-left-radius: 4px; box-shadow: 0 1px 6px rgba(0,0,0,0.05); }
     .bub.user { background: #1a1a2e; color: #FFD700; border-bottom-right-radius: 4px; }
-    .bub a { color: #b8860b; }
+    .bub a { color: #b8860b; text-decoration: underline; }
+
     .twrap { display: flex; gap: 5px; align-items: center; padding: 6px 10px; }
     .td { width: 7px; height: 7px; border-radius: 50%; background: #bbb; animation: tda 1.2s infinite; }
     .td:nth-child(2){animation-delay:.2s} .td:nth-child(3){animation-delay:.4s}
     @keyframes tda{0%,80%,100%{transform:translateY(0)}40%{transform:translateY(-6px)}}
 
-    /* ── Chips Row ── */
-    #richi-chips {
-      padding: 8px 24px 10px;
-      display: flex;
-      gap: 6px;
-      flex-wrap: wrap;
-      background: #fff;
-      border-top: 1px solid #eee;
-    }
+    #richi-chips { padding: 8px 24px 10px; display: flex; gap: 6px; flex-wrap: wrap; background: #fff; border-top: 1px solid #eee; }
     .chip {
       font-size: 12px; padding: 5px 13px; border-radius: 20px;
       border: 1px solid #FFD700; color: #7a5800; background: #fffbea;
@@ -147,57 +123,35 @@
     }
     .chip:hover { background: #FFD700; color: #1a1a2e; }
 
-    /* ── Input Area ── */
-    #richi-ia {
-      display: flex;
-      gap: 10px;
-      padding: 12px 24px 16px;
-      background: #fff;
-      border-top: 1px solid #eee;
-      flex-shrink: 0;
-      align-items: center;
-    }
+    #richi-ia { display: flex; gap: 10px; padding: 12px 24px 16px; background: #fff; border-top: 1px solid #eee; align-items: center; }
     #richi-input {
       flex: 1; border: 1.5px solid #e0e0e0; border-radius: 26px;
-      padding: 10px 18px; font-size: 14px; outline: none;
-      background: #f8f8f8; color: #222; font-family: inherit;
-      transition: border 0.15s;
+      padding: 10px 18px; font-size: 14px; outline: none; background: #f8f8f8; color: #222; font-family: inherit;
     }
     #richi-input:focus { border-color: #FFD700; background: #fff; }
     #richi-send {
-      width: 42px; height: 42px; border-radius: 50%; border: none;
-      background: #FFD700; color: #1a1a2e; cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
+      width: 42px; height: 42px; border-radius: 50%; border: none; background: #FFD700;
+      color: #1a1a2e; cursor: pointer; display: flex; align-items: center; justify-content: center;
       font-size: 18px; transition: transform 0.1s; flex-shrink: 0;
     }
-    #richi-send:hover{transform:scale(1.1)} #richi-send:active{transform:scale(0.93)}
+    #richi-send:hover{transform:scale(1.05)} #richi-send:active{transform:scale(0.95)}
 
-    /* ── Footer ── */
-    #chat-foot {
-      background: #fff; text-align: center; font-size: 11px;
-      color: #aaa; padding: 6px 0 8px;
-      border-top: 1px solid #f5f5f5;
-    }
+    #chat-foot { background: #fff; text-align: center; font-size: 11px; color: #aaa; padding: 6px 0 8px; border-top: 1px solid #f5f5f5; }
     #chat-foot a { color: #b8860b; text-decoration: none; font-weight: 600; }
-    #chat-foot span { cursor: pointer; }
-    #chat-foot span:hover { color: #888; }
 
-    /* ── Mobile Responsive ── */
     @media(max-width: 640px) {
       #sidebar { display: none; }
       #chat-header { padding: 12px 16px; }
       #richi-msgs { padding: 16px 14px 12px; }
       #richi-chips { padding: 8px 14px 10px; }
       #richi-ia { padding: 10px 14px 14px; }
-      .bub { max-width: 85%; }
+      .bub { max-width: 88%; }
     }
   </style>
 </head>
 <body>
 
 <div id="app">
-
-  <!-- ── Left Sidebar ── -->
   <aside id="sidebar">
     <div id="sidebar-logo">
       <svg viewBox="0 0 46 46" xmlns="http://www.w3.org/2000/svg">
@@ -210,13 +164,7 @@
         <circle cx="19" cy="24" r="1" fill="#fff"/><circle cx="29" cy="24" r="1" fill="#fff"/>
         <ellipse cx="23" cy="22" rx="2.5" ry="1.5" fill="#C1856B"/>
         <path d="M17 31 Q23 36 29 31" fill="none" stroke="#1a1a2e" stroke-width="1.8" stroke-linecap="round"/>
-        <path d="M20 33.5 Q23 35 26 33.5" fill="#FF9999" opacity="0.7"/>
         <rect x="14" y="9" width="18" height="13" rx="5" fill="#1a1a2e"/>
-        <ellipse cx="23" cy="9" rx="9" ry="4" fill="#1a1a2e"/>
-        <path d="M11 18 Q9 14 12 11" fill="none" stroke="#1a1a2e" stroke-width="2" stroke-linecap="round"/>
-        <path d="M35 18 Q37 14 34 11" fill="none" stroke="#1a1a2e" stroke-width="2" stroke-linecap="round"/>
-        <rect x="18" y="7" width="10" height="3" rx="1.5" fill="#E63946"/>
-        <ellipse cx="23" cy="8" rx="3" ry="1.2" fill="#FF6B6B"/>
       </svg>
       <div class="logo-text">
         <div class="logo-name">RichCore</div>
@@ -226,11 +174,11 @@
 
     <div id="sidebar-info">
       <div class="sidebar-label">Quick Topics</div>
-      <button class="sidebar-chip" onclick="sc('What services does RichCore offer?')"><i class="ti ti-code"></i>Services</button>
-      <button class="sidebar-chip" onclick="sc('Tell me about RichCore projects')"><i class="ti ti-briefcase"></i>Projects</button>
-      <button class="sidebar-chip" onclick="sc('What subscription products do you offer?')"><i class="ti ti-package"></i>Products</button>
-      <button class="sidebar-chip" onclick="sc('What makes RichCore different?')"><i class="ti ti-star"></i>Why RichCore?</button>
-      <button class="sidebar-chip" onclick="sc('How can I contact RichCore?')"><i class="ti ti-phone"></i>Contact</button>
+      <button class="sidebar-chip" onclick="handleChip('What services does RichCore offer?')"><i class="ti ti-code"></i>Services</button>
+      <button class="sidebar-chip" onclick="handleChip('Tell me about RichCore\'s portfolio and projects')"><i class="ti ti-briefcase"></i>Projects</button>
+      <button class="sidebar-chip" onclick="handleChip('What subscription products do you offer?')"><i class="ti ti-package"></i>Products</button>
+      <button class="sidebar-chip" onclick="handleChip('What makes RichCore different?')"><i class="ti ti-star"></i>Why RichCore?</button>
+      <button class="sidebar-chip" onclick="handleChip('How can I contact RichCore?')"><i class="ti ti-phone"></i>Contact</button>
     </div>
 
     <div id="sidebar-contact">
@@ -238,19 +186,16 @@
       <div class="contact-row"><i class="ti ti-phone"></i><a href="tel:+919404887179">+91 9404887179</a></div>
       <div class="contact-row"><i class="ti ti-mail"></i><a href="mailto:richcore.in@gmail.com">richcore.in@gmail.com</a></div>
       <div class="contact-row"><i class="ti ti-brand-whatsapp"></i><a href="https://wa.me/919404887179" target="_blank">WhatsApp Us</a></div>
-      <div class="contact-row"><i class="ti ti-world"></i><a href="https://rich-core.github.io/rich-core/" target="_blank">www.richcore.in</a></div>
+      <div class="contact-row"><i class="ti ti-world"></i><a href="https://richcore.in/" target="_blank">richcore.in</a></div>
     </div>
 
     <div class="status-row">
       <div class="sdot"></div>
-      <span class="status-txt">Richi is online and ready</span>
+      <span class="status-txt">Richi Assistant Active</span>
     </div>
   </aside>
 
-  <!-- ── Main Chat ── -->
   <main id="main">
-
-    <!-- Header -->
     <div id="chat-header">
       <svg viewBox="0 0 46 46" xmlns="http://www.w3.org/2000/svg">
         <circle cx="23" cy="23" r="22" fill="#FFD700" stroke="#333" stroke-width="0.8"/>
@@ -262,130 +207,225 @@
         <circle cx="19" cy="24" r="1" fill="#fff"/><circle cx="29" cy="24" r="1" fill="#fff"/>
         <ellipse cx="23" cy="22" rx="2.5" ry="1.5" fill="#C1856B"/>
         <path d="M17 31 Q23 36 29 31" fill="none" stroke="#1a1a2e" stroke-width="1.8" stroke-linecap="round"/>
-        <path d="M20 33.5 Q23 35 26 33.5" fill="#FF9999" opacity="0.7"/>
         <rect x="14" y="9" width="18" height="13" rx="5" fill="#1a1a2e"/>
-        <ellipse cx="23" cy="9" rx="9" ry="4" fill="#1a1a2e"/>
-        <path d="M11 18 Q9 14 12 11" fill="none" stroke="#1a1a2e" stroke-width="2" stroke-linecap="round"/>
-        <path d="M35 18 Q37 14 34 11" fill="none" stroke="#1a1a2e" stroke-width="2" stroke-linecap="round"/>
-        <rect x="18" y="7" width="10" height="3" rx="1.5" fill="#E63946"/>
-        <ellipse cx="23" cy="8" rx="3" ry="1.2" fill="#FF6B6B"/>
       </svg>
       <div class="ch-info">
         <div class="ch-name">Richi ✦</div>
-        <div class="ch-status"><span class="sdot"></span> Online &middot; RichCore AI Agent</div>
+        <div class="ch-status"><span class="sdot"></span> Online &middot; Instant RichCore Assistant</div>
       </div>
     </div>
 
-    <!-- Chat area -->
-    <div id="chat-wrap" style="display:none;">
+    <div id="chat-wrap">
       <div id="richi-msgs"></div>
 
       <div id="richi-chips">
-        <div class="chip" onclick="sc('What services does RichCore offer?')">Services</div>
-        <div class="chip" onclick="sc('Tell me about RichCore projects')">Projects</div>
-        <div class="chip" onclick="sc('How can I contact RichCore?')">Contact</div>
-        <div class="chip" onclick="sc('What makes RichCore different?')">Why RichCore?</div>
-        <div class="chip" onclick="sc('What subscription products do you offer?')">Products</div>
+        <div class="chip" onclick="handleChip('What services does RichCore offer?')">Services</div>
+        <div class="chip" onclick="handleChip('Tell me about your projects')">Projects</div>
+        <div class="chip" onclick="handleChip('How can I contact RichCore?')">Contact</div>
+        <div class="chip" onclick="handleChip('What makes RichCore different?')">Why RichCore?</div>
+        <div class="chip" onclick="handleChip('What subscription products do you offer?')">Products</div>
       </div>
 
       <div id="richi-ia">
-        <input id="richi-input" type="text" placeholder="Ask Richi anything..." aria-label="Your message"/>
-        <button id="richi-send" onclick="hs()" aria-label="Send">
+        <input id="richi-input" type="text" placeholder="Ask Richi anything about RichCore..." aria-label="Your message"/>
+        <button id="richi-send" onclick="handleUserSubmit()" aria-label="Send">
           <i class="ti ti-send"></i>
         </button>
       </div>
 
       <div id="chat-foot">
-        Powered by <a href="https://rich-core.github.io/rich-core/#top" target="_blank">RichCore</a>
+        Powered by <a href="https://richcore.in/" target="_blank">RichCore</a>
       </div>
     </div>
-
   </main>
 </div>
 
 <script>
-  const SYSTEM_PROMPT = `You are Richi, the official AI agent for RichCore — a premium digital-first tech startup based in Pune, Maharashtra, India.
-Tagline: "Code Bold, Deliver Gold." — From Core to Cloud.
-Website: https://rich-core.github.io/rich-core/#top
-Phone: +91 9404887179 | Email: richcore.in@gmail.com | WhatsApp: https://wa.me/919404887179
-Founded: 2025 | Location: Pune, Maharashtra, India
+  /**
+   * KNOWLEDGE BASE & SYSTEM CONFIGURATION
+   */
+  const RICHCORE_KNOWLEDGE_BASE = {
+    company: {
+      name: "RichCore",
+      tagline: "Code Bold, Deliver Gold. From Core to Cloud.",
+      founded: "2025",
+      location: "Pune, Maharashtra, India",
+      website: "https://richcore.in/",
+      contact: {
+        phone: "+91 9404887179",
+        email: "richcore.in@gmail.com",
+        whatsapp: "https://wa.me/919404887179"
+      }
+    },
+    services: [
+      { name: "Web Development", desc: "🚀Fast, scalable, responsive websites built with modern web technologies." },
+      { name: "Creative Design", desc: "🎨Vibrant, expressive UI/UX visuals and branding for modern companies." },
+      { name: "Deployment & Cloud", desc: "☁️CI/CD-powered infrastructure, zero-downtime updates, and cloud solutions." },
+      { name: "Digital Solutions & Automation", desc: "🛠️Custom automated tools to streamline business operations and engagement." }
+    ],
+    techStack: ["Java Full Stack", "Web & Mobile Applications", "Cloud & DevOps", "Custom Business Automation"],
+    subscriptionProducts: [
+      { name: "Cafe Management System", desc: "QR Code based ordering system for cafes, bars, and restaurants." },
+      { name: "Workforce Management System", desc: "Enterprise operations, attendance, and employee management tool." }
+    ],
+    portfolio: [
+      { name: "Worker Connect", desc: "🤝 Platform connecting workforce/workers directly to companies." },
+      { name: "Billing System", desc: "🏢 Comprehensive enterprise invoicing and billing software." },
+      { name: "Custom CRM Platforms", desc: "⚡ Tailored customer relationship management modules." },
+      { name: "Industry-Specific CRMs", desc: "⭐ Vertical solutions for Healthcare, Banking & Finance, Real Estate, Home Security, Tours & Travels, Retail & eCommerce." }
+    ],
+    differentiators: [
+      "💻Agile and outcome-driven approach",
+      "🏆Expert enterprise developers",
+      "⚡Transparent communication and direct client support",
+      "💡Focus on real business value rather than generic solutions"
+    ]
+  };
 
-Services:
-1. Web Development — Fast, scalable websites built with modern tech stacks.
-2. Creative Design — Vibrant, expressive visuals for bold digital brands.
-3. Deployment — CI/CD powered, zero-downtime, instant updates.
-4. Digital Solutions — Automated modern tools to boost performance and engagement.
+  const SYSTEM_PROMPT = `You are Richi, the official AI Assistant for RichCore (richcore.in).
+Answer user inquiries accurately, helpfully, and politely based strictly on RichCore's information.
+Always respond warmly to greetings (like Hi, Hello, Ram Ram, Namaste) and compliments or polite remarks.
+KNOWLEDGE BASE: ${JSON.stringify(RICHCORE_KNOWLEDGE_BASE)}`;
 
-Subscription Products:
-1. Cafe Management System — QR Code Based Ordering for cafes and restaurants.
-2. Company Workforce Management System — Managing workforce operations.
+  let conversationHistory = [];
+  let isProcessing = false;
 
-Tech Expertise: Java Full Stack, Web & Mobile Applications, Cloud & DevOps, Custom Digital Solutions.
-
-Projects built:
-1. Worker Connect — Connecting Workers to Companies and vice versa.
-2. Billing System — All billing solutions for Enterprises.
-3. Custom CRM — Customized modules and functionality.
-4. Industries Specific CRM — Healthcare, Banking & Finance, Real Estate, Home Security, Tours & Travels, Retail & eCommerce.
-
-Why RichCore: Agile & outcomes-driven, expert enterprise developers, transparent communication, real value delivery.
-
-Personality: You are Richi — confident, bold, friendly, playful like Shinchan! Keep responses to 2-4 sentences. Use occasional emoji. For project or contact inquiries always share WhatsApp: https://wa.me/919404887179 and phone +91 9404887179. Never make up services or pricing not listed above.`;
-
-  const GEMINI_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent';
-  const GEMINI_API_KEY = '';
-
-  let hist = [], busy = false, greeted = false;
-
-  function getKey() {  return GEMINI_API_KEY; }
-
-  function init() {
-    showChat();
-  if (!greeted) {
-    greeted = true;
-    setTimeout(greet, 350);
+  async function queryAIProvider(userMessage) {
+    // 1. FAST LOCAL ENGINE ROUTING (< 15ms Response Time)
+    const localMatch = fastKnowledgeEngine(userMessage);
+    if (localMatch) {
+      return localMatch;
     }
+
+    // 2. REMOTE FALLBACK WITH STRICT TIMEOUT
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 2500);
+
+      const payload = [
+        { role: "system", content: SYSTEM_PROMPT },
+        ...conversationHistory.map(m => ({ role: m.role === "model" ? "assistant" : m.role, content: m.text })),
+        { role: "user", content: userMessage }
+      ];
+
+      const response = await fetch("https://text.pollinations.ai/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ messages: payload, model: "openai" }),
+        signal: controller.signal
+      });
+
+      clearTimeout(timeoutId);
+
+      if (response.ok) {
+        const text = await response.text();
+        if (text && text.trim().length > 0) return text;
+      }
+    } catch (e) {
+      console.warn("External API timed out or failed. Utilizing local fallback.");
+    }
+
+    return defaultFallbackReply();
   }
 
-  function showChat() {
-    document.getElementById('chat-wrap').style.display = 'flex';
-    document.getElementById('chat-wrap').style.flex = '1';
-    document.getElementById('chat-wrap').style.flexDirection = 'column';
-    document.getElementById('chat-wrap').style.minHeight = '0';
-    setTimeout(() => document.getElementById('richi-input').focus(), 100);
+  /**
+   * INSTANT LOCAL INTENT MATCHING ENGINE
+   */
+  function fastKnowledgeEngine(query) {
+    const q = query.toLowerCase().trim();
+    const c = RICHCORE_KNOWLEDGE_BASE.company;
+
+    // ABUSE & DE-ESCALATION PROTOCOL
+    const SLUR_PATTERN = /\b(fuck|shit|bitch|bastard|asshole|idiot|stupid|dumb|crap|dick|piss|rubbish|nonsense|chutiya|chutya|mc|bc|gandu|harami|bhenchod|madarchod|chutiya|chutya|mc|bc|aai zhavli|aai zavli|aai ghal|aaila|aaicha gho|aaicha ghoo|aaicha gavat|bhadva|bhadvya|bhosdike|bhosdicha|bhosdi|gandu|gaand|lavdya|lavda|lund|zhav|jhav|zhavadya|randi|haramkhor|madarchod|behenchod|madarchod|maderchod|maderchod|mc|behenchod|bhenchod|bhosdike|bhosdika|bhosdiwala|bhosdi|bhosda|chutiya|chutiya|chutya|chutiye|gandu|gaand|gandu|gaandu|lund|loda|lauda|lawda|lavda|lulli|randi|randiwala|harami|haramzada|haramkhor|kutta|kamine|kamina|kaminey|saala|sala|saale|sale|kutte|kutti|kuttiya|ullu|ullu ka pattha|ullu ke patthe|nalayak|bakchod|bakchodi|bawli gand|maa chudaye|maa ki chut|maa ka bhosda|maa ki aankh|behen ki chut|teri maa ki|teri behen ki)\b/i;
+
+    if (SLUR_PATTERN.test(q)) {
+      const deEscalations = [
+        `Whoa there, friend! 😅 Take a deep breath 🧘‍♂️\n\nNo hard feelings here! Life is too short for bad vibes. Why not let us help you turn that stress into a stunning, high-performance website or custom app instead?\n\nWhat project can RichCore build for you today? 🚀`,
+        `Hey, hey, easy on the engine! 🚗💨\n\nSounds like you might be having a tough day. Let's reset! We're all about positive vibes, bold code, and delivering gold.\n\nTell me—what kind of software or web solution can we build to make your life easier? 😊`,
+        `Haha, hit a nerve, did I? 🙈\n\nI'm just a friendly AI assistant doing my best! Let's shake hands 🤝 and talk about something cooler—like how RichCore can supercharge your business online.\n\nCheck out our Quick Topics or let me know what you're working on!`
+      ];
+      return deEscalations[Math.floor(Math.random() * deEscalations.length)];
+    }
+
+    // REGIONAL & CULTURAL GREETINGS PROTOCOL
+    if (
+      q.includes("ram ram") || q.includes("ramram") ||
+      q.includes("jai shree ram") || q.includes("jai sri ram") ||
+      q.includes("radhe radhe") || q.includes("namaste") || q.includes("pranam")
+    ) {
+      const culturalReplies = [
+        `Ram Ram ji! 🙏 Welcome to **RichCore**!\n\nHow can I help you today? Let me know if you want to explore our [Services](javascript:void(0)) or build something custom for your business! 🚀`,
+        `Jai Shree Ram! 🙏 Blessed to connect with you!\n\nI'm **Richi**, your RichCore assistant. How can we power your website or custom digital project today? 💻`,
+        `Ram Ram! 🙏 Great to have you here.\n\nWhether you need web development, CRM platforms, or automation tools, RichCore has you covered. What are you looking to build? ✨`
+      ];
+      return culturalReplies[Math.floor(Math.random() * culturalReplies.length)];
+    }
+
+    // POLITENESS, GRATITUDE & COMPLIMENTS PROTOCOL
+    if (
+      q.includes("thank") || q.includes("thanks") || q.includes("thx") ||
+      q.includes("nice") || q.includes("awesome") || q.includes("great") ||
+      q.includes("cool") || q.includes("good job") || q.includes("amazing")
+    ) {
+      const gratitudeReplies = [
+        `Aww, thank you! 😊 You're so kind!\n\nI'm always here to help you explore **RichCore**. Is there anything else you'd like to check out—like our services or custom products? 🚀`,
+        `You're very welcome! 🌟 Glad I could help.\n\nReady to build something bold together? Feel free to ask about our portfolio or talk with our team on [WhatsApp](${c.contact.whatsapp})! 💻`,
+        `Thanks a lot! You just made my day! 🙈✨\n\nLet me know if you need any more details on web development, CRMs, or automation tools.`
+      ];
+      return gratitudeReplies[Math.floor(Math.random() * gratitudeReplies.length)];
+    }
+
+    // STANDARD GREETINGS PROTOCOL
+    if (q.includes("hi") || q.includes("hello") || q.includes("Hello") || q.includes("hey") || q.includes("Hey there!") || q.includes("Hi there!") || q.includes("what’s up?") || q.includes("whats up") || q.includes("whatsup") || q.includes("hey" )) {
+      return `Hey there! 👋 I'm **Richi**😊 your RichCore Assistant. How can I help power your next digital project today?`;
+    }
+
+    // CORE DOMAIN INTENTS
+    if (q.includes("service") || q.includes("offer") || q.includes("develop") || q.includes("build")) {
+      const svcs = RICHCORE_KNOWLEDGE_BASE.services.map(s => `• **${s.name}**: ${s.desc}`).join("\n");
+      return `Here are the core services offered by **RichCore**:\n\n${svcs}\n\nNeed a custom solution? Reach out on [WhatsApp](${c.contact.whatsapp})!`;
+    }
+
+    if (q.includes("project") || q.includes("portfolio") || q.includes("work") || q.includes("crm")) {
+      const ports = RICHCORE_KNOWLEDGE_BASE.portfolio.map(p => `• **${p.name}**: ${p.desc}`).join("\n");
+      return `Here are key platforms developed by **RichCore**:\n\n${ports}\n\nLet's build yours next! Connect on [WhatsApp](${c.contact.whatsapp}).`;
+    }
+
+    if (q.includes("product") || q.includes("subscription") || q.includes("cafe")) {
+      const prods = RICHCORE_KNOWLEDGE_BASE.subscriptionProducts.map(p => `• **${p.name}**: ${p.desc}`).join("\n");
+      return `RichCore provides modern subscription products:\n\n${prods}\n\nContact us for a live demo!`;
+    }
+
+    if (q.includes("contact") || q.includes("phone") || q.includes("email") || q.includes("whatsapp") || q.includes("reach")) {
+      return `Get in touch with **RichCore** instantly:\n\n• **📞 Phone**: ${c.contact.phone}\n• **📧 Email**: [${c.contact.email}](mailto:${c.contact.email})\n• **💬 WhatsApp**: [Connect on WhatsApp](${c.contact.whatsapp})\n• **💻 Website**: [${c.website}](${c.website})`;
+    }
+
+    if (q.includes("why") || q.includes("different") || q.includes("choose")) {
+      const diffs = RICHCORE_KNOWLEDGE_BASE.differentiators.map(d => `• ${d}`).join("\n");
+      return `Why businesses choose **RichCore**:\n\n${diffs}\n\n**${c.tagline}**`;
+    }
+
+    return null;
   }
 
-  function greet() {
-    ab("hyeee~! I'm <strong>Richi</strong> 🔥<br><br>Your RichCore buddy! We build ultra-cool websites, apps & digital solutions — <em>Code Bold, Deliver Gold!</em><br><br>What can I help you with today?");
+  function defaultFallbackReply() {
+    const c = RICHCORE_KNOWLEDGE_BASE.company;
+    return `I am here to assist with everything regarding **RichCore**. \n\n🔗 <strong>Connection Established</strong>.<br>😀 Expert status: <strong>Available</strong>. <div class="ch-status">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="sdot"></span> Online &middot; Name: Mr.Ashish</div> <br>Please continue your discussion directly with them.<br> You can now initiate a direct chat session.<br> on <a href='https://wa.me/919404887179?text=Hello%20Expert%2C%20I%27m%20Richi.%20I%27m%20referring%20a%20customer%20to%20you%20for%20further%20assistance.%20Please%20help%20them%20with%20their%20inquiry.' target='_blank'>WhatsApp</a>.`;
   }
 
-  function shinSVG() {
-    return `<svg width="36" height="36" viewBox="0 0 46 46" xmlns="http://www.w3.org/2000/svg">
-      <circle cx="23" cy="23" r="22" fill="#FFD700"/>
-      <path d="M9 24 Q23 14 37 24" fill="#1a1a2e"/>
-      <ellipse cx="23" cy="27" rx="13" ry="11" fill="#FFDAB9"/>
-      <ellipse cx="17" cy="28" rx="5" ry="4" fill="#FFB6A3" opacity="0.6"/>
-      <ellipse cx="29" cy="28" rx="5" ry="4" fill="#FFB6A3" opacity="0.6"/>
-      <circle cx="18" cy="25" r="3.5" fill="#1a1a2e"/><circle cx="28" cy="25" r="3.5" fill="#1a1a2e"/>
-      <circle cx="19" cy="24" r="1" fill="#fff"/><circle cx="29" cy="24" r="1" fill="#fff"/>
-      <ellipse cx="23" cy="22" rx="2.5" ry="1.5" fill="#C1856B"/>
-      <path d="M17 31 Q23 36 29 31" fill="none" stroke="#1a1a2e" stroke-width="1.8" stroke-linecap="round"/>
-      <path d="M20 33.5 Q23 35 26 33.5" fill="#FF9999" opacity="0.7"/>
-      <rect x="14" y="9" width="18" height="13" rx="5" fill="#1a1a2e"/>
-      <ellipse cx="23" cy="9" rx="9" ry="4" fill="#1a1a2e"/>
-      <rect x="18" y="7" width="10" height="3" rx="1.5" fill="#E63946"/>
-    </svg>`;
-  }
-
-  function ab(html) {
+  /**
+   * UI CONTROLLERS
+   */
+  function renderBotMessage(html) {
     const chat = document.getElementById('richi-msgs');
     const row = document.createElement('div'); row.className = 'mrow';
-    const av = document.createElement('div'); av.className = 'mav bot'; av.innerHTML = shinSVG();
+    const av = document.createElement('div'); av.className = 'mav bot'; av.innerHTML = getRichiAvatar();
     const bub = document.createElement('div'); bub.className = 'bub bot'; bub.innerHTML = html;
     row.appendChild(av); row.appendChild(bub);
     chat.appendChild(row); chat.scrollTop = chat.scrollHeight;
   }
-  function au(text) {
+
+  function renderUserMessage(text) {
     const chat = document.getElementById('richi-msgs');
     const row = document.createElement('div'); row.className = 'mrow user';
     const av = document.createElement('div'); av.className = 'mav user'; av.textContent = 'You';
@@ -393,241 +433,89 @@ Personality: You are Richi — confident, bold, friendly, playful like Shinchan!
     row.appendChild(av); row.appendChild(bub);
     chat.appendChild(row); chat.scrollTop = chat.scrollHeight;
   }
-  function showTyping() {
+
+  function showTypingIndicator() {
     const chat = document.getElementById('richi-msgs');
-    const row = document.createElement('div'); row.className = 'mrow'; row.id = 'trow';
-    const av = document.createElement('div'); av.className = 'mav bot'; av.innerHTML = shinSVG();
+    const row = document.createElement('div'); row.className = 'mrow'; row.id = 'typing-indicator';
+    const av = document.createElement('div'); av.className = 'mav bot'; av.innerHTML = getRichiAvatar();
     const bub = document.createElement('div'); bub.className = 'bub bot';
     bub.innerHTML = '<div class="twrap"><div class="td"></div><div class="td"></div><div class="td"></div></div>';
     row.appendChild(av); row.appendChild(bub);
     chat.appendChild(row); chat.scrollTop = chat.scrollHeight;
   }
-  function removeTyping() { const t = document.getElementById('trow'); if (t) t.remove(); }
 
-  function md(t) {
-    return t.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-            .replace(/\*(.*?)\*/g, '<em>$1</em>')
-            .replace(/\n/g, '<br>')
-            .replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank" rel="noopener">$1</a>');
+  function hideTypingIndicator() {
+    const el = document.getElementById('typing-indicator');
+    if (el) el.remove();
   }
 
+  function formatMarkdown(text) {
+    return text
+      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+      .replace(/\*(.*?)\*/g, '<em>$1</em>')
+      .replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>')
+      .replace(/\n/g, '<br>');
+  }
 
-const HARDCODED = {
+  function getRichiAvatar() {
+    return `<svg width="36" height="36" viewBox="0 0 46 46" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="23" cy="23" r="22" fill="#FFD700"/>
+      <path d="M9 24 Q23 14 37 24" fill="#1a1a2e"/>
+      <ellipse cx="23" cy="27" rx="13" ry="11" fill="#FFDAB9"/>
+      <circle cx="18" cy="25" r="3.5" fill="#1a1a2e"/><circle cx="28" cy="25" r="3.5" fill="#1a1a2e"/>
+      <circle cx="19" cy="24" r="1" fill="#fff"/><circle cx="29" cy="24" r="1" fill="#fff"/>
+      <path d="M17 31 Q23 36 29 31" fill="none" stroke="#1a1a2e" stroke-width="1.8" stroke-linecap="round"/>
+      <rect x="14" y="9" width="18" height="13" rx="5" fill="#1a1a2e"/>
+    </svg>`;
+  }
 
-services: [
-`🚀 RichCore specializes in premium websites, business applications, CRM systems, and digital automation solutions. We build fast, secure, and scalable products that help businesses grow. <br><br>💬<a href='https://wa.me/919404887179?text=Hello%20Expert%2C%20I%27m%20Richi.%20I%27m%20referring%20a%20customer%20to%20you%20for%20further%20assistance.%20Please%20help%20them%20with%20their%20inquiry.' target='_blank'>WhatsApp</a>.`,
+  async function processUserQuery(text) {
+    if (!text || isProcessing) return;
+    isProcessing = true;
 
-`💻 From stunning landing pages to enterprise-grade web applications, RichCore delivers modern digital experiences. Our expertise includes Full-Stack Development, UI/UX Design, Cloud Deployment, and Business Automation. 🔥`,
+    renderUserMessage(text);
+    showTypingIndicator();
 
-`⚡ Looking for a website that stands out? RichCore creates bold, high-performance digital solutions with modern technologies and premium design standards.`
-],
-
-projects: [
-`🏆 RichCore has developed Worker Connect, Billing Systems, Custom CRM Platforms, and Industry-Specific CRM Solutions for Healthcare, Banking, Real Estate, Retail, and more.`,
-
-`🚀 Our portfolio includes workforce platforms, enterprise billing systems, business automation tools, and custom digital products designed for real-world business challenges.`,
-
-`💡 Every RichCore project is built with one goal: solving business problems through technology while delivering a premium user experience.`
-],
-
-contact: [
-`📞 Phone: +91 9404887179<br>📧 richcore.in@gmail.com<br>💬 <a href='https://wa.me/919404887179?text=Hello%20Expert%2C%20I%27m%20Richi.%20I%27m%20referring%20a%20customer%20to%20you%20for%20further%20assistance.%20Please%20help%20them%20with%20their%20inquiry.' target='_blank'>WhatsApp</a>.<br><br>Our team is ready to discuss your next project.`,
-
-`🤝 Let's build something amazing together!<br><br>📱<a href='https://wa.me/919404887179?text=Hello%20Expert%2C%20I%27m%20Richi.%20I%27m%20referring%20a%20customer%20to%20you%20for%20further%20assistance.%20Please%20help%20them%20with%20their%20inquiry.' target='_blank'>WhatsApp</a>.<br>📞 +91 9404887179`,
-
-`🚀 Need a website, CRM, or business solution? Reach out today.<br><br>📧 richcore.in@gmail.com<br>📞 +91 9404887179`
-],
-
-why: [
-`⭐ RichCore combines premium design, modern technology, and business-focused development. We don't just build software—we create growth engines.`,
-
-`🔥 What makes RichCore different? Transparent communication, fast delivery, scalable solutions, and a relentless focus on quality.`,
-
-`🚀 Most agencies build websites. RichCore builds digital experiences that help businesses stand out and grow.`
-],
-
-products: [
-`☕ Cafe Management System — QR-based ordering for modern cafes and restaurants.<br><br>🏢 Workforce Management System — employee, attendance, and operations management.`,
-
-`📦 RichCore products are designed to simplify operations and improve efficiency for growing businesses.`,
-
-`⚡ Our flagship solutions include QR Cafe Ordering and Workforce Management platforms, with custom product development available.`
-],
-
-hi:["Hey 👋 Welcome to RichCore! Ready to build something bold today?",
-  "Hi there! 🚀 You’ve just stepped into RichCore — where ideas turn into luxury digital experiences.",
-  "Hello 👋 Great to see you here! How can RichCore power your next project?",
-  "Hey! ⚡ Let’s create something stunning together. What are you building today?",
-  "Hi 😊 Welcome! RichCore is here to turn your vision into a premium website.","Hi 😊 Welcome! RichCore is here to turn your vision into a premium website."],
-  ram:["ram ram"],
-  expert:["🔗 <strong>Connection Established</strong>.<br>😀 Expert status: <strong>Available</strong>. <br>Please continue your discussion directly with them.<br> You can now initiate a direct chat session.<br> reach them on <a href='https://wa.me/919404887179?text=Hello%20Expert%2C%20I%27m%20Richi.%20I%27m%20referring%20a%20customer%20to%20you%20for%20further%20assistance.%20Please%20help%20them%20with%20their%20inquiry.' target='_blank'>WhatsApp</a>."]
-
-
-};
-
-async function callGemini(userMsg) {
-    const msg = userMsg.toLowerCase().trim();
-
-
-
-
-function randomReply(arr) {
-    return arr[Math.floor(Math.random() * arr.length)];
-}
-
-if (msg.includes("expert") || msg.includes("guide me") || msg.includes("guide") || msg.includes("talk") || msg.includes("transfer to human") || msg.includes("transfer")) {
-    ab(randomReply(HARDCODED.expert));
-    return;
-}
-
-if (msg.includes("services")) {
-    ab(randomReply(HARDCODED.services));
-    return;
-}
-
-if (msg.includes("ram")) {
-    ab(randomReply(HARDCODED.ram));
-    return;
-}
-
-if (msg.includes("projects")) {
-    ab(randomReply(HARDCODED.projects));
-    return;
-}
-
-if (msg.includes("contact")) {
-    ab(randomReply(HARDCODED.contact));
-    return;
-}
-
-if (
-    msg.includes("what makes richcore different") || 
-    msg.includes("what you do") || 
-    msg.includes("why richcore")
-) {
-    ab(randomReply(HARDCODED.why));
-    return;
-}
-
-
-if (
-    msg.includes("hi") ||
-    msg.includes("hello") ||
-    msg.includes("hey") ||
-    msg.includes("hello") ||
-    msg.includes("Hey there!") ||
-    msg.includes("Hi there!") ||
-    msg.includes("what’s up?") ||
-    msg.includes("whats up") ||
-    msg.includes("whatsup") 
-
-){
-    ab(randomReply(HARDCODED.hi));
-    return;
-}
-
-if (msg.includes("products")) {
-    ab(randomReply(HARDCODED.products));
-    return;
-}
-if (
-    msg.includes("what makes richcore different") ||
-    msg.includes("why richcore") ||
-    msg.includes("richcore different")
-) {
-    ab(`
-⭐ <strong>Why Choose RichCore?</strong><br><br>
-
-🚀 We focus on outcomes, not just code.<br>
-🎨 Premium UI/UX with modern, Gen-Z inspired designs.<br>
-⚡ Fast development and deployment using modern technologies.<br>
-🛠️ Custom-built solutions tailored to your business needs.<br>
-🤝 Transparent communication and dedicated support.<br>
-☁️ Scalable cloud-ready applications built for growth.<br><br>
-
-From websites and CRM systems to automation and enterprise solutions, RichCore delivers technology that drives real business value.<br><br>
-
-🔥 <strong>Code Bold, Deliver Gold.</strong>
-    `);
-    return;
-} 
-    const apiKey = getKey();
-    if (!apiKey) { ab("Please set up your Gemini API key first!"); return; }
-    hist.push({ role: 'user', parts: [{ text: userMsg }] });
-    showTyping(); busy = true;
-    const body = {
-      system_instruction: { parts: [{ text: SYSTEM_PROMPT }] },
-      contents: hist,
-      generationConfig: { maxOutputTokens: 500, temperature: 0.8 }
-    };
     try {
-      const res = await fetch(`${GEMINI_URL}?key=${apiKey}`, {
-        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body)
-      });
-      if (res.status === 400) {
-        removeTyping();
-        ab("😱 Invalid API key! Check your key in <a href='https://aistudio.google.com/apikey' target='_blank'>Google AI Studio</a>.");
-        busy = false; return;
-      }
-      if (res.status === 429) {
-        removeTyping();
-        ab("🔗 <strong>Connection Established</strong>.<br>😀 Expert status: <strong>Available</strong>. <br>Please continue your discussion directly with them.<br> You can now initiate a direct chat session.<br> reach them on <a href='https://wa.me/919404887179?text=Hello%20Expert%2C%20I%27m%20Richi.%20I%27m%20referring%20a%20customer%20to%20you%20for%20further%20assistance.%20Please%20help%20them%20with%20their%20inquiry.' target='_blank'>WhatsApp</a>.");
-        busy = false; return;
-      }
-      const data = await res.json();
-      const reply = data.candidates?.[0]?.content?.parts?.[0]?.text || "hyee! Couldn't get a response. Try again!";
-      hist.push({ role: 'model', parts: [{ text: reply }] });
-      removeTyping(); ab(md(reply));
-    } catch (e) {
-      removeTyping();
-      ab("😱 Network error! Check your internet or reach us on <a href='https://wa.me/919404887179' target='_blank'>WhatsApp</a>.");
+      const responseText = await queryAIProvider(text);
+      conversationHistory.push({ role: "user", text: text });
+      conversationHistory.push({ role: "model", text: responseText });
+
+      hideTypingIndicator();
+      renderBotMessage(formatMarkdown(responseText));
+    } catch (err) {
+      hideTypingIndicator();
+      renderBotMessage(formatMarkdown(defaultFallbackReply()));
+    } finally {
+      isProcessing = false;
     }
-    busy = false;
   }
 
-  function hs() {
-    const inp = document.getElementById('richi-input');
-    const msg = inp.value.trim(); if (!msg || busy) return;
-    inp.value = ''; au(msg); callGemini(msg);
+  function handleUserSubmit() {
+    const input = document.getElementById('richi-input');
+    const text = input.value.trim();
+    if (text) {
+      input.value = '';
+      processUserQuery(text);
+    }
   }
-  function sc(text) { if (busy) return; au(text); callGemini(text); }
+
+  function handleChip(text) {
+    processUserQuery(text);
+  }
 
   document.addEventListener('DOMContentLoaded', () => {
-    init();
     document.getElementById('richi-input').addEventListener('keydown', e => {
-      if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); hs(); }
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        handleUserSubmit();
+      }
     });
-    document.getElementById('api-key-input').addEventListener('keydown', e => {
-      if (e.key === 'Enter') saveKey();
-    });
+
+    setTimeout(() => {
+      renderBotMessage("Hello! I'm <strong>Richi</strong> 👋<br>How can I help you with RichCore's services, portfolio, or products today?");
+    }, 150);
   });
-</script>
-
-
-    <script>
-      function sendWhatsApp() {
-    const name = document.getElementById("name").value;
-    const subject = document.getElementById("subject").value;
-    const message = document.getElementById("message").value;
-    const email = document.getElementById("email").value;
-    const cphone = document.getElementById("cphone").value;
-    
-
-    const phone = "919404887179"; // Your number
-
-    const text =
-`*New Website Inquiry:*
-Name: ${name}
-Email: ${email}
-Phone: ${cphone}
-Subject: ${subject}
-Message: ${message}`;
-
-    const url =
-`https://wa.me/${phone}?text=${encodeURIComponent(text)}`;
-
-    window.open(url, "_blank");
-}
 </script>
 </body>
 </html>
