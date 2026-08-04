@@ -593,7 +593,8 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
 
     </section> -->
 
-    <section id="Connect" class="section fade-in">
+
+<section id="Connect" class="section fade-in">
 
       <h2 class="animate-charcter">Let’s Contact</h2>
       <!-- <p class="premium-text">RichCore was founded with a mission to empower brands through code that performs and designs that last. Built by visionaries. Trusted by game changers.</p> -->
@@ -614,33 +615,25 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
               required />
             <input id="email" type="email" name="email" class="cf4-input"
               placeholder="Email" required />
-              <input id="cphone" type="phone" name="cphone" class="cf4-input"
+              <input id="cphone" type="tel" name="cphone" class="cf4-input"
               placeholder="Phone" required />
             <input id="subject" type="text" name="subject" class="cf4-input"
               placeholder="Subject" required />
             <textarea id="message" name="message" class="cf4-textarea" placeholder="Message"
               required></textarea>
-            <button type="submit" onclick="sendWhatsApp()"
-              class="premium-button cf4-btn">Send
-              Message on WhatsApp</button>
 
-            <!-- php coding code  
-  <?php if ($message_sent): ?>
-  <div class="thank-you-msg" style="color: green; margin-bottom: 20px;">
-    Thank you for contacting us! We have received your message.
-  </div>
-<?php elseif (!empty($error_msg)): ?>
-  <div class="error-msg" style="color: red; margin-bottom: 20px;">
-    <?= htmlspecialchars($error_msg) ?>
-  </div>
-<?php endif; ?>
+            <div id="formStatus" class="cf4-form-status" role="alert" aria-live="polite"></div>
 
-<?php if ($message_sent): ?>
-<script>
-  alert("Thank you for contacting us! We have received your message.");
-</script>
-<?php endif; ?>-->
-
+            <div class="cf4-btn-row">
+              <button type="button" onclick="sendWhatsApp()"
+                class="premium-button cf4-btn">
+                <i class="fab fa-whatsapp"></i> Send on WhatsApp
+              </button>
+              <button type="button" onclick="sendEmail()"
+                class="premium-button cf4-btn cf4-btn-email">
+                <i class="fas fa-envelope"></i> Email Us
+              </button>
+            </div>
           </form>
         </div>
         <div class="cf4-info-section">
@@ -696,36 +689,108 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
       </div>
 
     </section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     <footer>
       &copy; 2026 RichCore. All rights reserved.
     </footer>
 
-    <script>
-      function sendWhatsApp() {
-    const name = document.getElementById("name").value;
-    const subject = document.getElementById("subject").value;
-    const message = document.getElementById("message").value;
-    const email = document.getElementById("email").value;
-    const cphone = document.getElementById("cphone").value;
+
+
     
+    <script>
+      // Per changes.txt: only send if Name and Email are both filled in.
+      function getContactFields() {
+        const name = document.getElementById("name").value.trim();
+        const email = document.getElementById("email").value.trim();
+        const cphone = document.getElementById("cphone").value.trim();
+        const subject = document.getElementById("subject").value.trim();
+        const message = document.getElementById("message").value.trim();
+        return { name, email, cphone, subject, message };
+      }
 
-    const phone = "919404887179"; // Your number
+      function showFormStatus(text, isError) {
+        const el = document.getElementById("formStatus");
+        el.textContent = text;
+        el.style.color = isError ? "#ff4d4d" : "#2ecc71";
+        el.style.display = "block";
+      }
 
-    const text =
+      function validateContact({ name, email }) {
+        if (!name || !email) {
+          showFormStatus("⚠️ Please enter at least your name and email before sending.", true);
+          return false;
+        }
+        const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+        if (!emailOk) {
+          showFormStatus("⚠️ Please enter a valid email address.", true);
+          return false;
+        }
+        return true;
+      }
+
+      function sendWhatsApp() {
+        const fields = getContactFields();
+        if (!validateContact(fields)) return;
+
+        const phone = "919404887179"; // Your number
+        const text =
 `*New Website Inquiry:*
-Name: ${name}
-Email: ${email}
-Phone: ${cphone}
-Subject: ${subject}
-Message: ${message}`;
+Name: ${fields.name}
+Email: ${fields.email}
+Phone: ${fields.cphone || "-"}
+Subject: ${fields.subject || "-"}
+Message: ${fields.message || "-"}`;
 
-    const url =
-`https://wa.me/${phone}?text=${encodeURIComponent(text)}`;
+        const url = `https://wa.me/${phone}?text=${encodeURIComponent(text)}`;
+        showFormStatus("✅ Opening On WhatsApp with your message...", false);
+        window.open(url, "_blank");
+      }
+      function sendEmail() {
+        const fields = getContactFields();
+        if (!validateContact(fields)) return;
 
-    window.open(url, "_blank");
-}
-</script>
+        const to = "richcore.in@gmail.com";
+        const subject = fields.subject ? `New Inquiry: ${fields.subject}` : "New Website Inquiry";
+        const body =
+`Name: ${fields.name}
+Email: ${fields.email}
+Phone: ${fields.cphone || "-"}
 
+Message:
+${fields.message || "-"}`;
+
+        const url = `mailto:${to}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+        showFormStatus("✅ Opening your email app...", false);
+        window.location.href = url;
+      }
+    </script>
+
+
+    <style>
+      .cf4-btn-row { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 8px; }
+      .cf4-btn-row .cf4-btn { flex: 1 1 200px; display: flex; align-items: center; justify-content: center; gap: 8px; }
+      .cf4-btn-email { background: linear-gradient(135deg, #1a1a2e, #333366); color: #FFD700; }
+      .cf4-form-status { font-size: 13px; margin-top: 4px; display: none; }
+      @media (max-width: 480px) {
+        .cf4-btn-row { flex-direction: column; }
+      }
+    </style>
 
 
 <script>const modal = document.getElementById("agentModal");document.getElementById("openAgentBtn").addEventListener("click", () => {    modal.style.display = "flex";});function closeAgent(){    modal.style.display = "none";}window.addEventListener("click", (e) => {    if(e.target === modal){        closeAgent();    }});</script>
@@ -763,6 +828,7 @@ This keeps your AI agent completely separate from your main website, so all its 
     const isLight = document.body.classList.contains('light-theme');
     localStorage.setItem('richcore-theme', isLight ? 'light' : 'dark');
   });
+
 </script>
   </body>
 </html>
